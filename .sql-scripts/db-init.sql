@@ -1,6 +1,7 @@
 CREATE TABLE `account` (
   `id`              INT(11) NOT NULL AUTO_INCREMENT,
   `document_number` VARCHAR(14) NOT NULL,
+  `credit_limit`    DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `document_unique` UNIQUE (`document_number`)
 );

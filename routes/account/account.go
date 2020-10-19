@@ -16,14 +16,15 @@ func createAccount(c echo.Context) error {
 	logrus.Infof("Starting createAccount process")
 
 	account := new(struct {
-		DocNumber string `json:"document_number"`
+		DocNumber   string  `json:"document_number"`
+		CreditLimit float64 `json:"credit_limit"`
 	})
 
 	if err := c.Bind(account); err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid account data")
 	}
 
-	ID, err := database.InsertAccount(account.DocNumber)
+	ID, err := database.InsertAccount(account.DocNumber, account.CreditLimit)
 	if err != nil {
 		if strings.Contains(err.Error(), "Duplicate entry") {
 			return c.JSON(http.StatusBadRequest, &echo.HTTPError{

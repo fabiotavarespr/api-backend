@@ -1,4 +1,4 @@
-insert into account (document_number) values ("12345678900");
+insert into account (document_number, credit_limit) values ("12345678900", 5000.00);
 
 insert into operation_type (id, description) values (1, "COMPRA A VISTA");
 insert into operation_type (id, description) values (2, "COMPRA PARCELADA");
