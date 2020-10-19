@@ -63,7 +63,7 @@ docker stop db-backend
 ### Iniciar o projeto
 
 ```sh
-go run main.go --log-level=debug --server-hostname=0.0.0.0 --server-port=8081 --database-hostname=localhost --database-username=root --database-password=passwd123 --database-name=backend
+go run main.go --log-level=debug --server-hostname=0.0.0.0 --server-port=8080 --database-hostname=localhost --database-username=root --database-password=passwd123 --database-name=backend
 ```
 
 ## Variáveis de ambiente
