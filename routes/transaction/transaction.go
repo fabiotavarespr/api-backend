@@ -11,7 +11,7 @@ import (
 )
 
 func createTransaction(c echo.Context) error {
-	logrus.Infof("Starting a new transaction creation process")
+	logrus.Infof("Starting createTransaction process")
 
 	tr := new(domain.Transaction)
 	if err := c.Bind(tr); err != nil {
@@ -26,6 +26,7 @@ func createTransaction(c echo.Context) error {
 		})
 	}
 
+	logrus.Infof("Ending createTransaction process")
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"ID":      ID,
 		"Message": "New transaction successfully created",

@@ -6,8 +6,8 @@ import (
 
 // Load function to load accounts endpoints
 func Load(e *echo.Echo) {
-	g := e.Group("/accounts")
+	account := e.Group("/accounts")
 
-	g.POST("", createAccount)
-	g.GET("/:account_id", readAccount)
+	account.POST("", createAccount)
+	account.GET("/:account_id", readAccount)
 }

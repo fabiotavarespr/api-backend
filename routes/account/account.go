@@ -13,7 +13,7 @@ import (
 )
 
 func createAccount(c echo.Context) error {
-	logrus.Infof("Starting a new account creation process")
+	logrus.Infof("Starting createAccount process")
 
 	account := new(struct {
 		DocNumber string `json:"document_number"`
@@ -43,6 +43,7 @@ func createAccount(c echo.Context) error {
 		})
 	}
 
+	logrus.Infof("Ending createAccount process")
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"ID":      ID,
 		"Message": "New account successfully created",
@@ -50,7 +51,7 @@ func createAccount(c echo.Context) error {
 }
 
 func readAccount(c echo.Context) error {
-	logrus.Infof("Trying to read account with id %v", c.Param("account_id"))
+	logrus.Infof("Starting readAccount with id %v", c.Param("account_id"))
 	accountID, err := strconv.ParseInt(c.Param("account_id"), 10, 64)
 	if err != nil {
 		logrus.Errorf("account_id must be a number: %v", c.Param("account_id"))
@@ -70,6 +71,6 @@ func readAccount(c echo.Context) error {
 			})
 		}
 	}
-
+	logrus.Infof("Ending readAccount with id %v", accountID)
 	return c.JSON(http.StatusOK, accountResponse)
 }
