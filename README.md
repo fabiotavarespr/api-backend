@@ -68,7 +68,7 @@ go run main.go --log-level=debug --server-hostname=0.0.0.0 --server-port=8081 --
 
 ## Variáveis de ambiente
 
-| Variáveis              | Default      | Description                                     |
+| Variáveis              | Padrão       | Descrição                                       |
 |------------------------|--------------|-------------------------------------------------|
 | log-level              | info         | debug, info, warning, error                     |
 | server-hostname        | 0.0.0.0      | IP do servidor backend                          |
