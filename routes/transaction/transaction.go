@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -18,16 +19,25 @@ func createTransaction(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Invalid transaction data")
 	}
 
-	if !validationOperationTypes(*tr) {
+	if !isValidOperationTypes(*tr) {
 		return c.JSON(http.StatusBadRequest, &echo.HTTPError{
 			Code:    http.StatusBadRequest,
 			Message: fmt.Sprintf("Invalid value with payment"),
 		})
 	}
 
-	validCredit, newLimit := validationCreditLimit(*tr)
+	account, err := database.GetAccount(tr.AccountID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			logrus.Errorf("account_id %v doesn't exist", tr.AccountID)
+			return c.JSON(http.StatusNotFound, &echo.HTTPError{
+				Code:    http.StatusNotFound,
+				Message: fmt.Sprintf("account_id %v doesn't exist", tr.AccountID),
+			})
+		}
+	}
 
-	if !validCredit {
+	if !isValidCreditLimit(account.CreditLimit, tr.Amount) {
 		return c.JSON(http.StatusBadRequest, &echo.HTTPError{
 			Code:    http.StatusBadRequest,
 			Message: fmt.Sprintf("Invalid credit limit to payment"),
@@ -38,11 +48,11 @@ func createTransaction(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &echo.HTTPError{
 			Code:    http.StatusBadRequest,
-			Message: fmt.Sprintf("Error trying to insert a transaction", err),
+			Message: fmt.Sprintf("Error trying to insert a transaction"),
 		})
 	}
 
-	_, _ = database.UpdateAccountCreditLimit(tr.AccountID, newLimit)
+	_, _ = database.UpdateAccountCreditLimit(tr.AccountID, calculateCreditLimit(account.CreditLimit, tr.Amount))
 
 	logrus.Infof("Ending createTransaction process")
 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -51,7 +61,7 @@ func createTransaction(c echo.Context) error {
 	})
 }
 
-func validationOperationTypes(transaction domain.Transaction) bool {
+func isValidOperationTypes(transaction domain.Transaction) bool {
 
 	if transaction.OperationTypeID == domain.CompraAVista ||
 		transaction.OperationTypeID == domain.CompraParcelada ||
@@ -70,17 +80,15 @@ func validationOperationTypes(transaction domain.Transaction) bool {
 	return true
 }
 
-func validationCreditLimit(transaction domain.Transaction) (bool, float64) {
-	account, err := database.GetAccount(transaction.AccountID)
-	if err != nil {
-		return false, 0
-	}
-
-	limit := account.CreditLimit + transaction.Amount
-
+func isValidCreditLimit(creditLimit, amount float64) bool {
+	limit := calculateCreditLimit(creditLimit, amount)
 	if limit < 0 {
-		return false, 0
+		return false
 	}
 
-	return true, limit
+	return true
+}
+
+func calculateCreditLimit(creditLimit, amount float64) float64 {
+	return creditLimit + amount
 }
