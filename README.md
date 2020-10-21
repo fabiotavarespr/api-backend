@@ -84,7 +84,7 @@ go run main.go --log-level=debug --server-hostname=0.0.0.0 --server-port=8080 --
 ### Criando uma conta
 
 ```sh
-curl -X POST localhost:8080/accounts -d '{"document_number": "999999999"}' -H 'Content-Type: application/json'
+curl -X POST localhost:8080/accounts -d '{"document_number": "999999999", "credit_limit": 2000}' -H 'Content-Type: application/json'
 ```
 
 ### Consultando uma conta
