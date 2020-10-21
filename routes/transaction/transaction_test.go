@@ -28,3 +28,23 @@ func TestIsValidOperationTypes(t *testing.T) {
 	}
 
 }
+
+func TestIsValidCreditLimit(t *testing.T) {
+	var tests = []struct {
+		creditLimit float64
+		amount      float64
+		want        bool
+	}{
+		{-300, 500, true},
+		{-200, 0, false},
+		{-1000, 1000, true},
+		{100, 200, true},
+		{0, 0, true},
+	}
+	for _, test := range tests {
+		if got := isValidCreditLimit(test.creditLimit, test.amount); got != test.want {
+			t.Errorf("isValidCreditLimit with CreditLimit %g and Amount %g result %t but want %t ", test.creditLimit, test.amount, got, test.want)
+		}
+	}
+
+}
